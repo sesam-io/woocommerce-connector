@@ -1,0 +1,16 @@
+{
+  "_id": "{{@ system @}}",
+  "authentication": "basic",
+  "operations": {
+    "products-list": {
+      "id_expression": "{{ id }}",
+      "method": "GET",
+      "url": "v3/products"
+    }
+  },
+  "password": "$SECRET(consumer_secret)",
+  "type": "system:rest",
+  "url_pattern": "{{@ base_url @}}/%s",
+  "username": "$SECRET(consumer_key)",
+  "verify_ssl": true
+}
