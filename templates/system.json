@@ -8,9 +8,9 @@
       "url": "v3/products"
     }
   },
-  "password": "$SECRET(consumer_secret)",
+  "password": "$SECRET(api_key)",
   "type": "system:rest",
   "url_pattern": "{{@ base_url @}}/%s",
-  "username": "$SECRET(consumer_key)",
+  "username": "{{@ consumer_key @}}",
   "verify_ssl": true
 }
