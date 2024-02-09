@@ -1,7 +1,7 @@
 {
   "additional_parameters": {
-    "base_url": {},
-    "consumer_key": {}
+    "consumer_key": {},
+    "domain": {}
   },
   "auth": "api_key",
   "datatypes": {

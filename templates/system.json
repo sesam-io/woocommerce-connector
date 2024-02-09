@@ -10,7 +10,7 @@
   },
   "password": "$SECRET(api_key)",
   "type": "system:rest",
-  "url_pattern": "{{@ base_url @}}/%s",
+  "url_pattern": "https://{{@ domain @}}/wp-json/wc/%s",
   "username": "{{@ consumer_key @}}",
   "verify_ssl": true
 }
