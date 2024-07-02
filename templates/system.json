@@ -2,10 +2,23 @@
   "_id": "{{@ system @}}",
   "authentication": "basic",
   "operations": {
-    "products-list": {
+    "insert": {
+      "method": "POST",
+      "payload-type": "json",
+      "url": "v3/{{ properties.datatype }}"
+    },
+    "list": {
       "id_expression": "{{ id }}",
       "method": "GET",
-      "url": "v3/products"
+      "url": "v3/{{ properties.datatype }}"
+    },
+    "lookup": {
+      "method": "GET",
+      "url": "v3/{{ properties.datatype }}/{{ entity.id }}"
+    },
+    "update": {
+      "method": "PUT",
+      "url": "v3/{{ properties.datatype }}/{{ entity.id }}"
     }
   },
   "password": "$SECRET(api_key)",
