@@ -2,23 +2,71 @@
   "_id": "{{@ system @}}",
   "authentication": "basic",
   "operations": {
-    "insert": {
+    "customers-delete": {
+      "method": "DELETE",
+      "url": "v3/customers/{{ entity.id }}"
+    },
+    "customers-insert": {
       "method": "POST",
       "payload-type": "json",
-      "url": "v3/{{ properties.datatype }}"
+      "url": "v3/customers"
     },
-    "list": {
+    "customers-list": {
       "id_expression": "{{ id }}",
       "method": "GET",
-      "url": "v3/{{ properties.datatype }}"
+      "url": "v3/customers"
     },
-    "lookup": {
+    "customers-lookup": {
       "method": "GET",
-      "url": "v3/{{ properties.datatype }}/{{ entity.id }}"
+      "url": "v3/customers/{{ entity.id }}"
     },
-    "update": {
+    "customers-update": {
       "method": "PUT",
-      "url": "v3/{{ properties.datatype }}/{{ entity.id }}"
+      "url": "v3/customers/{{ entity.id }}"
+    },
+    "orders-delete": {
+      "method": "DELETE",
+      "url": "v3/orders/{{ entity.id }}"
+    },
+    "orders-insert": {
+      "method": "POST",
+      "payload-type": "json",
+      "url": "v3/orders"
+    },
+    "orders-list": {
+      "id_expression": "{{ id }}",
+      "method": "GET",
+      "url": "v3/orders"
+    },
+    "orders-lookup": {
+      "method": "GET",
+      "url": "v3/orders/{{ entity.id }}"
+    },
+    "orders-update": {
+      "method": "PUT",
+      "url": "v3/orders/{{ entity.id }}"
+    },
+    "products-delete": {
+      "method": "DELETE",
+      "url": "v3/products/{{ entity.id }}"
+    },
+    "products-insert": {
+      "method": "POST",
+      "payload-type": "json",
+      "url": "v3/products"
+    },
+    "products-list": {
+      "id_expression": "{{ id }}",
+      "method": "GET",
+      "url": "v3/products"
+    },
+    "products-lookup": {
+      "method": "GET",
+      "url": "v3/products/{{ entity.id }}"
+    },
+    "products-update": {
+      "method": "PUT",
+      "url": "v3/products/{{ entity.id }}"
     }
   },
   "password": "$SECRET(api_key)",
