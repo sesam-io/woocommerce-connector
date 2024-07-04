@@ -5,8 +5,14 @@
   },
   "auth": "api_key",
   "datatypes": {
+    "customers": {
+      "template": "templates/customers.json"
+    },
+    "orders": {
+      "template": "templates/customers.json"
+    },
     "products": {
-      "template": "templates/products.json"
+      "template": "templates/customers.json"
     }
   },
   "system-template": "templates/system.json"
