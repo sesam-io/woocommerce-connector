@@ -13,6 +13,9 @@
     },
     "products": {
       "template": "templates/customers.json"
+    },
+    "productvariations": {
+      "template": "templates/productvariations.json"
     }
   },
   "system-template": "templates/system.json"

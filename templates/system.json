@@ -14,7 +14,14 @@
     "customers-list": {
       "id_expression": "{{ id }}",
       "method": "GET",
-      "url": "v3/customers"
+      "next_page_link": "{%if (headers.Link is defined)%}{{headers.Link.next}}{%endif%}",
+      "next_page_termination_strategy": [
+        "not-full-page",
+        "next-page-link-empty",
+        "empty-result"
+      ],
+      "page_size": 1,
+      "url": "v3/customers?per_page={{page_size}}"
     },
     "customers-lookup": {
       "method": "GET",
@@ -36,7 +43,16 @@
     "orders-list": {
       "id_expression": "{{ id }}",
       "method": "GET",
-      "url": "v3/orders"
+      "next_page_link": "{%if (headers.Link is defined)%}{{headers.Link.next}}{%endif%}",
+      "next_page_termination_strategy": [
+        "not-full-page",
+        "next-page-link-empty",
+        "empty-result"
+      ],
+      "page_size": 1,
+      "since_property_name": "modified_after",
+      "updated_expression": "{{date_modified_gmt}}",
+      "url": "v3/orders?per_page={{page_size}}"
     },
     "orders-lookup": {
       "method": "GET",
@@ -58,7 +74,16 @@
     "products-list": {
       "id_expression": "{{ id }}",
       "method": "GET",
-      "url": "v3/products"
+      "next_page_link": "{%if (headers.Link is defined)%}{{headers.Link.next}}{%endif%}",
+      "next_page_termination_strategy": [
+        "not-full-page",
+        "next-page-link-empty",
+        "empty-result"
+      ],
+      "page_size": 10,
+      "since_property_name": "modified_after",
+      "updated_expression": "{{date_modified_gmt}}",
+      "url": "v3/products?per_page={{ page_size }}"
     },
     "products-lookup": {
       "method": "GET",
@@ -67,6 +92,10 @@
     "products-update": {
       "method": "PUT",
       "url": "v3/products/{{ entity.id }}"
+    },
+    "productvariations-lookup": {
+      "method": "GET",
+      "url": "v3/products/{{ entity.id }}/variations"
     }
   },
   "password": "$SECRET(api_key)",
