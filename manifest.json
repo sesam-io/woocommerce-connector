@@ -5,17 +5,20 @@
   },
   "auth": "api_key",
   "datatypes": {
-    "customers": {
-      "template": "templates/customers.json"
+    "customer": {
+      "template": "templates/customer.json"
     },
-    "orders": {
-      "template": "templates/customers.json"
+    "order": {
+      "template": "templates/customer.json"
     },
-    "products": {
-      "template": "templates/customers.json"
+    "product": {
+      "template": "templates/customer.json"
     },
-    "productvariations": {
-      "template": "templates/productvariations.json"
+    "productvariation": {
+      "template": "templates/productvariation.json"
+    },
+    "webhook": {
+      "template": "templates/webhook.json"
     }
   },
   "system-template": "templates/system.json"

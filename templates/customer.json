@@ -1,0 +1,305 @@
+[
+  {
+    "_id": "{{@ system @}}-{{@ datatype @}}-all",
+    "add_namespaces": false,
+    "source": {
+      "operation": "{{@ datatype @}}-list",
+      "system": "{{@ system @}}",
+      "trace": true,
+      "type": "rest"
+    },
+    "type": "pipe"
+  },
+  {
+    "_id": "{{@ system @}}-{{@ datatype @}}-collect",
+    "exclude_completeness": [
+      "{{@ system @}}-{{@ datatype @}}-share"
+    ],
+    "namespaced_identifiers": false,
+    "source": {
+      "datasets": [
+        "{{@ system @}}-{{@ datatype @}}-all",
+        "{{@ system @}}-{{@ datatype @}}-event"
+      ],
+      "type": "merge_datasets"
+    },
+    "transform": [
+      {
+        "rules": {
+          "default": [
+            [
+              "copy",
+              "*"
+            ],
+            [
+              "filter",
+              [
+                "not",
+                "_S.$deleted"
+              ]
+            ]
+          ]
+        },
+        "type": "dtl"
+      },
+      {
+        "properties": {
+          "primary_key": "id",
+          "share_dataset": "{{@ system @}}-{{@ datatype @}}-share"
+        },
+        "template": "transform-collect-rest",
+        "type": "template"
+      },
+      {
+        "rules": {
+          "default": [
+            [
+              "copy",
+              "*"
+            ],
+            [
+              "add",
+              "$last-modified",
+              [
+                "datetime-parse",
+                "%Y-%m-%dT%H:%M:%S",
+                "_S.date_modified_gmt"
+              ]
+            ]
+          ]
+        },
+        "type": "dtl"
+      }
+    ],
+    "type": "pipe"
+  },
+  {
+    "_id": "{{@ system @}}-{{@ datatype @}}-event",
+    "compaction": {
+      "keep_versions": 1
+    },
+    "namespaced_identifiers": false,
+    "pump": {
+      "run_at_startup_if_not_populated": true
+    },
+    "source": {
+      "system": "{{@ system @}}",
+      "type": "http_endpoint"
+    },
+    "transform": [
+      {
+        "rules": {
+          "default": [
+            [
+              "comment",
+              "TODO fix deletes when not preexisting in sink dataset"
+            ],
+            [
+              "copy",
+              "*"
+            ],
+            [
+              "add",
+              "_id",
+              [
+                "string",
+                "_S.id"
+              ]
+            ],
+            [
+              "add",
+              "$deleted",
+              [
+                "is-empty",
+                "_S.version"
+              ]
+            ]
+          ]
+        },
+        "type": "dtl"
+      }
+    ],
+    "type": "pipe"
+  },
+  {
+    "_id": "{{@ system @}}-{{@ datatype @}}-registerwebhook",
+    "namespaced_identifiers": false,
+    "pump": {
+      "run_at_startup_if_not_populated": true
+    },
+    "sink": {
+      "deletion_tracking": false,
+      "set_initial_offset": "onload"
+    },
+    "source": {
+      "entities": [
+        {
+          "_id": "{{@ datatype @}}-created",
+          "_updated": 0,
+          "properties": {
+            "datatype": "{{@ datatype @}} created",
+            "deliveryUrl": "https://datahub-648b6ecb.sesam.cloud/api/receivers/{{@ system @}}-{{@ datatype @}}-event/entities",
+            "topic": "{{@ datatype @}}.created"
+          }
+        },
+        {
+          "_id": "{{@ datatype @}}-updated",
+          "_updated": 1,
+          "properties": {
+            "datatype": "{{@ datatype @}} updated",
+            "deliveryUrl": "https://datahub-648b6ecb.sesam.cloud/api/receivers/{{@ system @}}-{{@ datatype @}}-event/entities",
+            "topic": "{{@ datatype @}}.updated"
+          }
+        },
+        {
+          "_id": "{{@ datatype @}}-deleted",
+          "_updated": 2,
+          "properties": {
+            "datatype": "{{@ datatype @}} deleted",
+            "deliveryUrl": "https://datahub-648b6ecb.sesam.cloud/api/receivers/{{@ system @}}-{{@ datatype @}}-event/entities",
+            "topic": "{{@ datatype @}}.deleted"
+          }
+        }
+      ],
+      "supports_since": true,
+      "type": "embedded"
+    },
+    "transform": [
+      {
+        "rules": {
+          "default": [
+            [
+              "copy",
+              "properties"
+            ],
+            [
+              "add",
+              "id",
+              [
+                "first",
+                [
+                  "hops",
+                  {
+                    "datasets": [
+                      "{{@ system @}}-{{@ datatype @}}-registerwebhook sink"
+                    ],
+                    "return": [
+                      "first",
+                      "sink.insert_response.id"
+                    ],
+                    "where": [
+                      [
+                        "eq",
+                        "_S._id",
+                        "sink._id"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ],
+            [
+              "add",
+              "$operation",
+              [
+                "if",
+                [
+                  "is-not-null",
+                  "_T.id"
+                ],
+                "lookup",
+                "insert"
+              ]
+            ]
+          ]
+        },
+        "type": "dtl"
+      },
+      {
+        "allowed_status_codes": "200,404",
+        "operation": "webhook-lookup",
+        "replace_entity": false,
+        "response_property": "lookup_response",
+        "response_status_property": "lookup_status_code",
+        "side_effects": false,
+        "system": "{{@ system @}}",
+        "trigger_on": {
+          "key": "$operation",
+          "value": "lookup"
+        },
+        "type": "rest"
+      },
+      {
+        "rules": {
+          "default": [
+            [
+              "copy",
+              "*"
+            ],
+            [
+              "comment",
+              "TODO: we should compare the state of the actual object vs our desired state."
+            ],
+            [
+              "discard",
+              [
+                "or",
+                [
+                  "eq",
+                  404,
+                  "_T.lookup_status_code"
+                ],
+                [
+                  "eq",
+                  "_S.$operation",
+                  "insert"
+                ]
+              ]
+            ]
+          ]
+        },
+        "type": "dtl"
+      },
+      {
+        "allowed_status_codes": "200,201",
+        "id_expression": "{{ insert_response.id }}",
+        "operation": "webhook-insert",
+        "replace_entity": false,
+        "response_property": "insert_response",
+        "response_status_property": "insert_status_code",
+        "side_effects": true,
+        "system": "{{@ system @}}",
+        "trace": true,
+        "type": "rest"
+      }
+    ],
+    "type": "pipe"
+  },
+  {
+    "_id": "{{@ system @}}-{{@ datatype @}}-share",
+    "batch_size": 1,
+    "namespaced_identifiers": false,
+    "sink": {
+      "deletion_tracking": false,
+      "set_initial_offset": "onload"
+    },
+    "source": {
+      "dataset": "{{@ system @}}-{{@ datatype @}}-transform",
+      "type": "dataset"
+    },
+    "transform": {
+      "properties": {
+        "operation_delete": "{{@ datatype @}}-delete",
+        "operation_insert": "{{@ datatype @}}-insert",
+        "operation_lookup": "{{@ datatype @}}-lookup",
+        "operation_update": "{{@ datatype @}}-update",
+        "primary_key": "id",
+        "rest_system": "{{@ system @}}",
+        "share_dataset": "{{@ system @}}-{{@ datatype @}}-share"
+      },
+      "template": "transform-share-rest",
+      "type": "template"
+    },
+    "type": "pipe"
+  }
+]
