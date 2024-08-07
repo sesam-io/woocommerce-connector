@@ -2,16 +2,16 @@
   "_id": "{{@ system @}}",
   "authentication": "basic",
   "operations": {
-    "customers-delete": {
+    "customer-delete": {
       "method": "DELETE",
       "url": "v3/customers/{{ entity.id }}"
     },
-    "customers-insert": {
+    "customer-insert": {
       "method": "POST",
       "payload-type": "json",
       "url": "v3/customers"
     },
-    "customers-list": {
+    "customer-list": {
       "id_expression": "{{ id }}",
       "method": "GET",
       "next_page_link": "{%if (headers.Link is defined)%}{{headers.Link.next}}{%endif%}",
@@ -20,27 +20,29 @@
         "next-page-link-empty",
         "empty-result"
       ],
-      "page_size": 10,
+      "page_size": 1,
+      "since_property_name": "modified_after",
+      "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/customers?per_page={{page_size}}"
     },
-    "customers-lookup": {
+    "customer-lookup": {
       "method": "GET",
       "url": "v3/customers/{{ entity.id }}"
     },
-    "customers-update": {
+    "customer-update": {
       "method": "PUT",
       "url": "v3/customers/{{ entity.id }}"
     },
-    "orders-delete": {
+    "order-delete": {
       "method": "DELETE",
       "url": "v3/orders/{{ entity.id }}"
     },
-    "orders-insert": {
+    "order-insert": {
       "method": "POST",
       "payload-type": "json",
       "url": "v3/orders"
     },
-    "orders-list": {
+    "order-list": {
       "id_expression": "{{ id }}",
       "method": "GET",
       "next_page_link": "{%if (headers.Link is defined)%}{{headers.Link.next}}{%endif%}",
@@ -54,24 +56,24 @@
       "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/orders?per_page={{page_size}}"
     },
-    "orders-lookup": {
+    "order-lookup": {
       "method": "GET",
       "url": "v3/orders/{{ entity.id }}"
     },
-    "orders-update": {
+    "order-update": {
       "method": "PUT",
       "url": "v3/orders/{{ entity.id }}"
     },
-    "products-delete": {
+    "product-delete": {
       "method": "DELETE",
       "url": "v3/products/{{ entity.id }}"
     },
-    "products-insert": {
+    "product-insert": {
       "method": "POST",
       "payload-type": "json",
       "url": "v3/products"
     },
-    "products-list": {
+    "product-list": {
       "id_expression": "{{ id }}",
       "method": "GET",
       "next_page_link": "{%if (headers.Link is defined)%}{{headers.Link.next}}{%endif%}",
@@ -80,22 +82,48 @@
         "next-page-link-empty",
         "empty-result"
       ],
-      "page_size": 10,
+      "page_size": 1,
       "since_property_name": "modified_after",
       "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/products?per_page={{ page_size }}"
     },
-    "products-lookup": {
+    "product-lookup": {
       "method": "GET",
       "url": "v3/products/{{ entity.id }}"
     },
-    "products-update": {
+    "product-update": {
       "method": "PUT",
       "url": "v3/products/{{ entity.id }}"
     },
-    "productvariations-lookup": {
+    "productvariation-lookup": {
       "method": "GET",
       "url": "v3/products/{{ entity.id }}/variations"
+    },
+    "webhook-delete": {
+      "method": "DELETE",
+      "payload-type": "json",
+      "url": "v3/webhooks/{{ entity['id'] }}?force=true"
+    },
+    "webhook-insert": {
+      "id_expression": "{{ insert_response.id }}",
+      "method": "POST",
+      "payload": {
+        "delivery_url": "{{ properties.deliveryUrl }}",
+        "name": "{{ properties.datatype}}",
+        "topic": "{{ properties.topic}}"
+      },
+      "payload-type": "json",
+      "url": "v3/webhooks"
+    },
+    "webhook-list": {
+      "id_expression": "{{ id }}",
+      "method": "GET",
+      "url": "v3/webhooks"
+    },
+    "webhook-lookup": {
+      "method": "GET",
+      "payload-type": "json",
+      "url": "v3/webhooks/{{ entity['id'] }}"
     }
   },
   "password": "$SECRET(api_key)",
