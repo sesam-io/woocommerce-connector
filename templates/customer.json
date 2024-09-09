@@ -4,6 +4,8 @@
     "add_namespaces": false,
     "source": {
       "operation": "{{@ datatype @}}-list",
+      "rate_limiting_delay": 5,
+      "rate_limiting_retries": 3,
       "system": "{{@ system @}}",
       "trace": true,
       "type": "rest"
