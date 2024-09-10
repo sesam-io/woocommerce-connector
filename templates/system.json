@@ -20,7 +20,7 @@
         "next-page-link-empty",
         "empty-result"
       ],
-      "page_size": 1,
+      "page_size": 10,
       "since_property_name": "modified_after",
       "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/customers?per_page={{page_size}}"
@@ -82,7 +82,7 @@
         "next-page-link-empty",
         "empty-result"
       ],
-      "page_size": 1,
+      "page_size": 10,
       "since_property_name": "modified_after",
       "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/products?per_page={{ page_size }}"
