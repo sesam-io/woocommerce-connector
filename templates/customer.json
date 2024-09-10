@@ -296,6 +296,8 @@
         "operation_lookup": "{{@ datatype @}}-lookup",
         "operation_update": "{{@ datatype @}}-update",
         "primary_key": "id",
+        "rate_limiting_delay": 5,
+        "rate_limiting_retries": 3,
         "rest_system": "{{@ system @}}",
         "share_dataset": "{{@ system @}}-{{@ datatype @}}-share"
       },
