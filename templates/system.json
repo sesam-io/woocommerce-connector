@@ -20,7 +20,7 @@
         "next-page-link-empty",
         "empty-result"
       ],
-      "page_size": 10,
+      "page_size": 100,
       "since_property_name": "modified_after",
       "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/customers?per_page={{page_size}}"
@@ -51,7 +51,7 @@
         "next-page-link-empty",
         "empty-result"
       ],
-      "page_size": 10,
+      "page_size": 100,
       "since_property_name": "modified_after",
       "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/orders?per_page={{page_size}}"
@@ -82,7 +82,7 @@
         "next-page-link-empty",
         "empty-result"
       ],
-      "page_size": 10,
+      "page_size": 100,
       "since_property_name": "modified_after",
       "updated_expression": "{{date_modified_gmt}}",
       "url": "v3/products?per_page={{ page_size }}"
@@ -127,6 +127,8 @@
     }
   },
   "password": "$SECRET(api_key)",
+  "rate_limiting_delay": 5,
+  "rate_limiting_retries": 3,
   "type": "system:rest",
   "url_pattern": "https://{{@ domain @}}/wp-json/wc/%s",
   "username": "{{@ consumer_key @}}",
